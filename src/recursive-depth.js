@@ -19,32 +19,39 @@ class DepthCalculator {
   }
 
   calculateDepth(arr) {
+    if (!Array.isArray(arr)) {
+      return;
+    }
 
-    this.preOrder(arr);
-    console.log(this.count);
-    return this.count;
-  }
-
-  preOrder(arr) {
-
-    this.deep++
-
-    for (const item of arr) {
-      if (Array.isArray(item)) {
-        this.preOrder(item);
+    if (Array.isArray(arr)) {
+      this.deep++
+      for (const item of arr) {
+        this.calculateDepth(item);
       }
+      if (this.count < this.deep) {
+        this.count = this.deep;
+      }
+      this.deep--
     }
 
-    if (this.count < this.deep) {
-      this.count = this.deep
+    if (!this.deep) {
+      const result = this.count;
+      this.count = 0;
+      this.deep = 0;
+      return result;
     }
-
-    this.deep = 1;
   }
 }
 const depthCalc = new DepthCalculator();
 
-depthCalc.calculateDepth([[]]);
+// depthCalc.calculateDepth([1, [8, [[]]], [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]], []]]], []]]]]]]]], []]]], []]]]]]]]]], 2, 3, [8, [[[[[[[[[[[[[[]]]]]]]]]]]]]]], [8, [[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]], 4, 5, ['6575', ['adas', ['dfg', [0]]]]]);
+// depthCalc.calculateDepth([1, 2, 3, 4, 5, [1]]);
+// depthCalc.calculateDepth([1, [8, [[]]], 2, 3, [8, []], 4, 5, ['6575', ['adas', ['dfg', [0]]]]]);
+// depthCalc.calculateDepth([1, 2, 3, [8, [2]], 4, 5, []]);
+// depthCalc.calculateDepth([1, 2, 3, [1], 4, 5, [1]]);
+// depthCalc.calculateDepth([1, [8, [[]]], 2, 3, [8, [[[[[[[[[[[[[]]]]]]]]]]]]]], [8, [[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]], 4, 5, ['6575', ['adas', ['dfg', [0]]]]]);
+// depthCalc.calculateDepth([1, [8, [[]]], 2, 3, [8, []], 4, 5, []]);
+// depthCalc.calculateDepth([1, [8, [[]]], 2, 3, [8, [[[[[[[[[[[[[]]]]]]]]]]]]]], 4, 5, ['6575', ['adas', ['dfg', [0]]]]]);
 
 module.exports = {
   DepthCalculator
