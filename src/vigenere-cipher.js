@@ -45,9 +45,41 @@ class VigenereCipheringMachine {
     return alphabet.join('');
   }
   encrypt(sourceString, key) {
+    if (!sourceString || !key) {
+      throw Error("Incorrect arguments!")
+    }
+
+    const sourceStringMod = sourceString.match(/[a-zA-Z]/g).join('');
+    let keyStringMod = key;
+    let resultString = '';
+    while (true) {
+      if (keyStringMod.length >= sourceStringMod.length) {
+        keyStringMod = keyStringMod.slice(0, sourceStringMod.length);
+        break
+      }
+      keyStringMod += keyStringMod;
+    }
+    for (let i = 0; i < sourceStringMod.length; i++) {
+      let k = this.alphabet.indexOf(sourceStringMod[i].toUpperCase());
+      let j = this.alphabet.indexOf(keyStringMod[i].toUpperCase());
+      resultString += this.square[k][j]
+    }
+    // console.log(resultString);
+    const regEx = /[a-zA-Z]/;
+    resultString = resultString.split('');
+
+    const result = sourceString.split('').map(value => regEx.test(value) ? resultString.shift() : value);
+
+    if (!this.directModeOn) {
+      return result.reverse().join('');
+    }
+
+    return result.join('');
+
+
 
     // return this.calculation(1, sourceString, key);
-    console.log(this.square);
+    // console.log(this.square);
     // const sourceStringMod = sourceString.match(/[a-z]/g).join('');
     // let keyStringMod = key;
     // let resultString = '';
@@ -81,14 +113,47 @@ class VigenereCipheringMachine {
     // return result.join('');
   }
   decrypt(sourceString, key) {
-    return this.calculation(0, sourceString, key);
-    // console.log(this.alphabet);
+    if (!sourceString || !key) {
+      throw Error("Incorrect arguments!")
+    }
+
+    let sourceStringMod = sourceString.match(/[a-zA-Z]/g);
+    if (!sourceStringMod) return;
+    sourceStringMod = sourceStringMod.join('');
+    let keyStringMod = key;
+    let resultString = '';
+    while (true) {
+      if (keyStringMod.length >= sourceStringMod.length) {
+        keyStringMod = keyStringMod.slice(0, sourceStringMod.length);
+        break
+      }
+      keyStringMod += keyStringMod;
+    }
+    for (let i = 0; i < sourceStringMod.length; i++) {
+      let k = this.alphabet.indexOf(keyStringMod[i].toUpperCase());
+      let j = this.square[k].indexOf(sourceStringMod[i].toUpperCase());
+      resultString += this.alphabet[j];
+    }
+    console.log(resultString);
+    const regEx = /[a-zA-Z]/;
+    resultString = resultString.split('');
+
+    const result = sourceString.split('').map(value => regEx.test(value) ? resultString.shift() : value);
+
+    if (!this.directModeOn) {
+      return result.reverse().join('');
+    }
+
+    return result.join('');
+
   }
   calculation(mode, sourceString, key) {
     if (!sourceString || !key) {
       throw Error("Incorrect arguments!");
     }
-    const sourceStringMod = sourceString.match(/[a-zA-Z]/g).join('');
+    let sourceStringMod = sourceString.match(/[a-zA-Z]/g);
+    if (!sourceStringMod) return;
+    sourceStringMod = sourceStringMod.join('');
     let keyStringMod = key;
     let resultString = '';
     while (true) {
@@ -128,10 +193,10 @@ class VigenereCipheringMachine {
   }
 }
 
-const directMachine = new VigenereCipheringMachine();
-const reverseMachine = new VigenereCipheringMachine(false);
+// const directMachine = new VigenereCipheringMachine();
+// const reverseMachine = new VigenereCipheringMachine(false);
 // console.log(directMachine.decrypt('UWJJW XAGWLNFM VNNNDXHVWWL :)', 'js'));+
-directMachine.encrypt('attack at dawn!', 'alphonse');
+// directMachine.encrypt('attack at dawn!', 'alphonse');
 // console.log(directMachine.encrypt('Example of sequence: 1, 2, 3, 4.', 'lilkey'));
 // console.log(directMachine.encrypt('cryptography', 'verylongkeyword'));
 // console.log(directMachine.encrypt('Same length key', 'Samelengthkey'));
